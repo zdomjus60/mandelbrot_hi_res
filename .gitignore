@@ -1,0 +1,27 @@
+# CMake build artifacts
+build/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.o
+*.so
+*.a
+*.dll
+*.exe
+*.out
+Mandelbrot # Assuming this will be the executable name
+
+# Editor/IDE specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Dependency directories (e.g., for CMake's FetchContent)
+_deps/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
