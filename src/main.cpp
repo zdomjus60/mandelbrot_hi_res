@@ -51,10 +51,14 @@ struct SwapChainSupportDetails {
     std::vector<VkPresentModeKHR> presentModes;
 };
 
+const int RANDOM_PALETTE_SIZE = 32;
+
 struct UniformBufferObject {
     alignas(16) glm::dvec2 center;
     alignas(8) double zoom;
     alignas(16) glm::vec3 color_offset;
+    alignas(4) int palette_mode; // 0 for original, 1 for random
+    alignas(16) glm::vec3 random_palette[RANDOM_PALETTE_SIZE];
 };
 
 
@@ -145,10 +149,21 @@ private:
     }
 
     static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-        if (key == GLFW_KEY_C && action == GLFW_PRESS) {
-            auto app = reinterpret_cast<MandelbrotApp*>(glfwGetWindowUserPointer(window));
-            app->ubo_target.color_offset = glm::linearRand(glm::vec3(0.0f), glm::vec3(2.0f * 3.14159f));
-            app->ubo_current.color_offset = app->ubo_target.color_offset;
+        auto app = reinterpret_cast<MandelbrotApp*>(glfwGetWindowUserPointer(window));
+        if (action == GLFW_PRESS) {
+            if (key == GLFW_KEY_C) {
+                app->ubo_target.color_offset = glm::linearRand(glm::vec3(0.0f), glm::vec3(2.0f * 3.14159f));
+                app->ubo_current.color_offset = app->ubo_target.color_offset;
+            } else if (key == GLFW_KEY_D) {
+                app->ubo_current.palette_mode = 1 - app->ubo_current.palette_mode; // Toggle between 0 and 1
+                app->ubo_target.palette_mode = app->ubo_current.palette_mode; // Update ubo_target as well
+                if (app->ubo_current.palette_mode == 1) { // If switched to random palette
+                    for (int i = 0; i < RANDOM_PALETTE_SIZE; ++i) {
+                        app->ubo_current.random_palette[i] = glm::linearRand(glm::vec3(0.0f), glm::vec3(1.0f));
+                        app->ubo_target.random_palette[i] = app->ubo_current.random_palette[i]; // Update ubo_target
+                    }
+                }
+            }
         }
     }
 
@@ -192,6 +207,12 @@ private:
         ubo_current.center = glm::dvec2(-0.5, 0.0);
         ubo_current.zoom = 3.0;
         ubo_current.color_offset = glm::linearRand(glm::vec3(0.0f), glm::vec3(2.0f * 3.14159f));
+        ubo_current.palette_mode = 0; // Initialize to original palette
+
+        for (int i = 0; i < RANDOM_PALETTE_SIZE; ++i) {
+            ubo_current.random_palette[i] = glm::linearRand(glm::vec3(0.0f), glm::vec3(1.0f));
+        }
+        
         ubo_target = ubo_current;
         ubo_start = ubo_current;
 
@@ -546,8 +567,8 @@ private:
     }
 
     void createGraphicsPipeline() {
-        auto vertShaderCode = readFile("shaders/shader.vert.spv");
-        auto fragShaderCode = readFile("shaders/shader.frag.spv");
+        auto vertShaderCode = readFile("/home/debian/Desktop/mandelbrot/build/shaders/shader.vert.spv");
+        auto fragShaderCode = readFile("/home/debian/Desktop/mandelbrot/build/shaders/shader.frag.spv");
         VkShaderModule vertShaderModule = createShaderModule(vertShaderCode);
         VkShaderModule fragShaderModule = createShaderModule(fragShaderCode);
         VkPipelineShaderStageCreateInfo vertShaderStageInfo{};

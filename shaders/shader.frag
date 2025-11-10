@@ -8,6 +8,8 @@ layout(binding = 0) uniform UniformBufferObject {
     dvec2 center;
     double zoom;
     vec3 color_offset;
+    int palette_mode; // 0 for original, 1 for random
+    vec3 random_palette[32];
 } ubo;
 
 void main() {
@@ -33,11 +35,16 @@ void main() {
         // Conteggio delle iterazioni per il colore
         float i_float = float(i);
         
-        // Palette di colori psichedelici
-        float r = 0.5 * (1.0 + cos(3.0 + i_float * 0.15 + ubo.color_offset.x));
-        float g = 0.5 * (1.0 + cos(3.5 + i_float * 0.20 + ubo.color_offset.y));
-        float b = 0.5 * (1.0 + cos(4.0 + i_float * 0.25 + ubo.color_offset.z));
-        
-        outColor = vec4(r, g, b, 1.0);
+        if (ubo.palette_mode == 0) {
+            // Original psychedelic banded palette
+            float r = 0.5 * (1.0 + cos(3.0 + i_float * 0.15 + ubo.color_offset.x));
+            float g = 0.5 * (1.0 + cos(3.5 + i_float * 0.20 + ubo.color_offset.y));
+            float b = 0.5 * (1.0 + cos(4.0 + i_float * 0.25 + ubo.color_offset.z));
+            outColor = vec4(r, g, b, 1.0);
+        } else {
+            // Random non-graduated palette
+            int palette_index = i % 32; // Use iteration count to index into the random palette
+            outColor = vec4(ubo.random_palette[palette_index], 1.0);
+        }
     }
 }
