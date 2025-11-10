@@ -10,7 +10,6 @@ This project implements a Mandelbrot set renderer using Vulkan, featuring high-p
     - Left-click to zoom in on the cursor position.
     - Right-click to zoom out.
     - Press 'C' to randomize the color offset for the psychedelic palette.
-    - Press 'D' to toggle between the psychedelic banded coloring and a new totally random, non-graduated palette. Each time 'D' is pressed while in random palette mode, a new set of random colors is generated.
 
 ## Building and Running
 
@@ -61,6 +60,7 @@ The application provides interactive controls for exploring the Mandelbrot set:
 -   **Left-click:** Zooms in on the cursor's position. The new center and zoom level are calculated based on the mouse coordinates, ensuring a precise zoom into the area of interest.
 -   **Right-click:** Zooms out, effectively increasing the visible area of the fractal.
 -   **'C' key:** Randomizes the color offset, allowing for dynamic changes to the banded coloring without affecting the fractal's geometry.
+-   **'D' key:** Toggles between the psychedelic banded coloring and a new totally random, non-graduated palette. Each time 'D' is pressed while in random palette mode, a new set of random colors is generated.
 
 Zoom transitions are smoothly animated using a `smoothstep` easing function. This provides a more visually pleasing experience by gradually interpolating between the starting and target zoom/center coordinates over a short duration.
 
