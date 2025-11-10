@@ -5,7 +5,7 @@ This project implements a Mandelbrot set renderer using Vulkan, featuring high-p
 ## Features
 
 - High-precision double-precision floating-point calculations for deep zooms into the Mandelbrot set.
-- Psychedelic banded coloring algorithm, and a new random non-graduated palette.
+- Psychedelic banded coloring algorithm.
 - Interactive zoom:
     - Left-click to zoom in on the cursor position.
     - Right-click to zoom out.
